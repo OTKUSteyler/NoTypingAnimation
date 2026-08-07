@@ -3,25 +3,11 @@
  * Original: Vencord (c) 2023 Vendicated and contributors — GPL-3.0-or-later
  */
 
-import { findByPropsLazy } from "@vendetta/metro";
-import { before } from "@vendetta/patcher";
+import { instead } from "@vendetta/patcher";
+import { findByProps } from "@vendetta/metro";
 
+const Typing = findByProps("startTyping");
 
-const TypingDots = findByPropsLazy("dotCycle");
+const patches = ["startTyping", "stopTyping"].map((k) => instead(k, Typing, () => {}));
 
-let unpatch: (() => void) | undefined;
-
-export default {
-    onLoad() {
-
-        unpatch = before("default", TypingDots, (args) => {
-            const props = args[0];
-            if (props && typeof props === "object" && "focused" in props) {
-                props.focused = false;
-            }
-        });
-    },
-    onUnload() {
-        unpatch?.();
-    }
-};
+export const onUnload = () => patches.forEach((unpatch) => unpatch());
