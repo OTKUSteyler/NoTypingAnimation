@@ -1,1 +1,1 @@
-(function(t,r,o){"use strict";const i=o.findByProps("startTyping"),e=["startTyping","stopTyping"].map(function(n){return r.instead(n,i,function(){})}),a=function(){return e.forEach(function(n){return n()})};return t.onUnload=a,t})({},vendetta.patcher,vendetta.metro);
+(function(t,o,r){"use strict";const n=[],e=r.findByProps("getTypingUsers");e&&n.push(o.instead("getTypingUsers",e,function(){return{}}));const s=function(){n.forEach(function(c){return c()}),n.length=0};return t.onUnload=s,t})({},vendetta.patcher,vendetta.metro);
