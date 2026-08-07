@@ -1,13 +1,20 @@
 /*
- * Kettu port of Vencord's NoTypingAnimation
+ * Kettu port of Vencord's NoTypingAnimation / SilentTyping-style behavior
  * Original: Vencord (c) 2023 Vendicated and contributors — GPL-3.0-or-later
  */
 
 import { instead } from "@vendetta/patcher";
 import { findByProps } from "@vendetta/metro";
 
-const Typing = findByProps("startTyping");
+const patches: Array<() => void> = [];
 
-const patches = ["startTyping", "stopTyping"].map((k) => instead(k, Typing, () => {}));
 
-export const onUnload = () => patches.forEach((unpatch) => unpatch());
+const TypingStore = findByProps("getTypingUsers");
+if (TypingStore) {
+    patches.push(instead("getTypingUsers", TypingStore, () => ({})));
+}
+
+export const onUnload = () => {
+    patches.forEach((unpatch) => unpatch());
+    patches.length = 0;
+};
